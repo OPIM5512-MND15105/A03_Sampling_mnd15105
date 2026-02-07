@@ -39,6 +39,49 @@ accuracy_smote, y_pred_smote = train_evaluate_model(X_resampled_smote, y_resampl
 evaluation_results["SMOTE Data"] = accuracy_smote
 y_test_preds["SMOTE Data"] = y_pred_smote
 
+# Initialize dictionaries to store accuracies for each run
+all_accuracies = {
+    "Original Data": [],
+    "Undersampled Data": [],
+    "Oversampled Data": [],
+    "SMOTE Data": []
+}
+
+num_runs = 30
+print(f"\n--- Running {num_runs} iterations for reproducibility ---")
+
+for i in range(num_runs):
+    print(f"\nIteration {i+1}/{num_runs}")
+    try:
+        # 1. Evaluate on Original Data
+        accuracy_original, _ = train_evaluate_model(X_train, y_train, X_test, y_test, "Original Data")
+        all_accuracies["Original Data"].append(accuracy_original)
+
+        # 2. Evaluate on Undersampled Data
+        accuracy_undersampled, _ = train_evaluate_model(X_resampled_under, y_resampled_under, X_test, y_test, "Undersampled Data")
+        all_accuracies["Undersampled Data"].append(accuracy_undersampled)
+
+        # 3. Evaluate on Oversampled Data
+        accuracy_oversampled, _ = train_evaluate_model(X_resampled_over, y_resampled_over, X_test, y_test, "Oversampled Data")
+        all_accuracies["Oversampled Data"].append(accuracy_oversampled)
+
+        # 4. Evaluate on SMOTE Data
+        accuracy_smote, _ = train_evaluate_model(X_resampled_smote, y_resampled_smote, X_test, y_test, "SMOTE Data")
+        all_accuracies["SMOTE Data"].append(accuracy_smote)
+    except NameError as e:
+        print(f"Error: {e}. Please ensure all preceding cells have been executed.")
+        break # Exit loop if essential variables are not defined
+
+import numpy as np
+
+print(f"\n--- Summary of Accuracies over {num_runs} Runs ---")
+for name, accuracies in all_accuracies.items():
+    if accuracies:
+        mean_acc = np.mean(accuracies)
+        std_acc = np.std(accuracies)
+        print(f"{name}: Mean Accuracy = {mean_acc:.4f}, Std Dev = {std_acc:.4f}")
+    else:
+        print(f"{name}: No accuracy data available.")
 print("\n--- Summary of Accuracies ---")
 for name, acc in evaluation_results.items():
     print(f"{name}: {acc:.4f}")

@@ -3,3 +3,4 @@ imbalanced-learn
 numpy
 pandas
 matplotlib
+pylance
