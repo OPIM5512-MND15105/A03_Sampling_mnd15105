@@ -2,6 +2,13 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, accuracy_score
 
 def train_evaluate_model(X_train_data, y_train_data, X_test_data, y_test_data, name):
+    from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+X_resampled_under, y_resampled_under = undersampler.fit_resample(X_train, y_train)
+
     """Trains a Logistic Regression model and evaluates its performance."""
     print(f"\n--- Training and Evaluating for {name} ---")
     model = LogisticRegression(max_iter=1000, random_state=42)
